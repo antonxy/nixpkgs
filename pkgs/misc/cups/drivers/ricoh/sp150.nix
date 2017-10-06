@@ -1,4 +1,4 @@
-{ stdenv, requireFile, cups }:
+{ stdenv, requireFile, cups, glibc }:
 
 stdenv.mkDerivation rec {
   name = "ricoh-sp150-linux-driver-${version}";
@@ -43,6 +43,8 @@ stdenv.mkDerivation rec {
       patchelf --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" "$bin"
       patchelf --set-rpath "$out/lib:${stdenv.lib.getLib cups}/lib" "$bin"
     done
+
+    ln -s ${stdenv.cc.cc.lib}/lib/libstdc++.so.6 $out/lib/
   '';
 
   # all binaries are already stripped
