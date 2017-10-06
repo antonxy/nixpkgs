@@ -19218,6 +19218,8 @@ with pkgs;
 
   retrofe = callPackage ../misc/emulators/retrofe { };
 
+  ricoh-sp150-linux-driver = callPackage ../misc/cups/drivers/ricoh/sp150.nix { };
+
   rpl = callPackage ../tools/text/rpl {
     pythonPackages = python3Packages;
   };
