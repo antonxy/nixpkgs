@@ -9,8 +9,7 @@ with stdenv.lib;
 
 let
 
-  opensslCrossSystem = hostPlatform.openssl.system or
-    (throw "openssl needs its platform name cross building");
+  opensslCrossSystem = "mingw64"; # hostPlatform.system or (throw "openssl needs its platform name cross building");
 
   common = args@{ version, sha256, patches ? [] }: stdenv.mkDerivation rec {
     name = "openssl-${version}";
