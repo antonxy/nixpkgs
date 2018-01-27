@@ -122,8 +122,8 @@ stdenv.mkDerivation {
     "--includedir=$(dev)/include"
     "--libdir=$(out)/lib"
   ] ++ optional enablePython "--with-python=${python.interpreter}"
-    ++ [ (if hostPlatform == buildPlatform then "--with-icu=${icu.dev}" else "--without-icu") ]
-    ++ optional (toolset != null) "--with-toolset=${toolset}";
+    ++ [ (if hostPlatform == buildPlatform then "--with-icu=${icu.dev}" else "--without-icu") ];
+    #++ optional (toolset != null) "--with-toolset=${toolset}";
 
   buildPhase = ''
     ./b2 ${b2Args}
