@@ -14,6 +14,7 @@
 , enableNumpy ? enablePython && stdenv.lib.versionAtLeast version "1.65"
 , taggedLayout ? ((enableRelease && enableDebug) || (enableSingleThreaded && enableMultiThreaded) || (enableShared && enableStatic))
 , patches ? []
+, specificLibs ? null
 , mpi ? null
 
 # Attributes inherit from specific versions
@@ -48,6 +49,8 @@ let
   # To avoid library name collisions
   layout = if taggedLayout then "tagged" else "system";
 
+  specificLibArgs = builtins.map ( lib : "--with-${lib}" ) specificLibs;
+
   b2Args = concatStringsSep " " ([
     "--includedir=$dev/include"
     "--libdir=$out/lib"
@@ -68,7 +71,7 @@ let
     "binary-format=pe"
     "address-model=${toString hostPlatform.parsed.cpu.bits}"
     "architecture=x86"
-  ]);
+  ] ++ optionals (specificLibs != null) specificLibArgs);
 
 in
 
