@@ -17,8 +17,8 @@ in stdenv.mkDerivation rec {
   configurePhase = ''
     export XALANCROOT=`pwd`/c
     cd `pwd`/c
-    mkdir -p $out/usr
-    ./runConfigure -p ${platform} -c cc -x c++ -P$out/usr
+    mkdir -p $out
+    ./runConfigure -p ${platform} -c cc -x c++ -P$out
   '';
 
   buildInputs = [ xercesc getopt ];
