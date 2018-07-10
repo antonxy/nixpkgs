@@ -9778,6 +9778,8 @@ with pkgs;
 
   libpfm = callPackage ../development/libraries/libpfm { };
 
+  libphidget = callPackage ../development/libraries/libphidget { };
+
   libpqxx = callPackage ../development/libraries/libpqxx {
     gnused = gnused_422;
   };
