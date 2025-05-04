@@ -1,0 +1,80 @@
+-- The following features have been enabled:
+
+ * OMC_TARGET_ARCH, x86_64
+ * SOURCE_REVISION, unknown-cmake
+ * CMAKE_VERSION, 3.30.5
+ * CMAKE_C_COMPILER_ID, GNU
+ * CMAKE_CXX_COMPILER_ID, GNU
+ * CMAKE_BUILD_TYPE, Release
+ * CMAKE_INSTALL_PREFIX, /nix/store/n9dkj2mq54idbv1qlg7szkak0ynym2vh-openmodelica-1.25.0
+ * OM_OMC_ENABLE_FORTRAN, ON
+ * OM_OMC_ENABLE_IPOPT, ON
+ * OM_OMC_USE_LAPACK, ON
+ * OMC_TARGET_SYSTEM_NAME, linux
+
+-- The following OPTIONAL packages have been found:
+
+ * OpenMP
+ * FLEX
+
+-- The following REQUIRED packages have been found:
+
+ * Java
+ * CURL
+ * Intl
+ * Iconv
+ * Threads
+ * BLAS
+ * LAPACK
+
+-- The following features have been disabled:
+
+ * CMAKE_Fortran_COMPILER_ID
+ * CMAKE_LIBRARY_ARCHITECTURE
+ * OM_ENABLE_GUI_CLIENTS
+ * OM_ENABLE_ENCRYPTION
+ * OM_USE_CCACHE
+ * OM_OMC_ENABLE_CPP_RUNTIME
+ * OM_OMC_USE_CORBA
+
+-- The following OPTIONAL packages have not been found:
+
+ * Git
+ * AsciiDoc
+ * PythonInterp
+ * Doxygen
+ * Boost
+ * OpenCL
+
+
+
+
+
+
+
+
+
+
+The following lines have issues (specifically '//' in paths).
+4:libdir=${prefix}//nix/store/n9dkj2mq54idbv1qlg7szkak0ynym2vh-openmodelica-1.25.0/lib//omc/
+5:includedir=${prefix}//nix/store/n9dkj2mq54idbv1qlg7szkak0ynym2vh-openmodelica-1.25.0/include/omc//cminpack-1
+It is very likely that paths are being joined improperly.
+ex: "${prefix}/@CMAKE_INSTALL_LIBDIR@" should be "@CMAKE_INSTALL_FULL_LIBDIR@"
+
+
+
+OMCompiler-3rdParty/blob/master/CMinpack/CMakeLists.txt:
+change
+set(CMINPACK_LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR})
+to
+set(CMINPACK_LIB_INSTALL_FULL_LIBDIR ${CMAKE_INSTALL_FULL_LIBDIR})
+
+cminpack.pc.in:
+change
+libdir=${prefix}/@CMINPACK_LIB_INSTALL_DIR@
+to
+libdir=@CMINPACK_LIB_INSTALL_FULL_LIBDIR@
+
+same for include
+
+
