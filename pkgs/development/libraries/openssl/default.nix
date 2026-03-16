@@ -123,4 +123,66 @@ in {
     ];
   };
 
+  openssl_3_5 = stdenv.mkDerivation rec {
+    name = "openssl-${version}";
+    version = "3.5.5";
+
+    src = fetchurl {
+      url = "https://www.openssl.org/source/${name}.tar.gz";
+      sha256 = "129aphl9yy5xd67cwacf000llkhpi1s8phmlhgws2rcb599r335j";
+    };
+
+    outputs = [ "bin" "dev" "out" "man" ];
+    setOutputFlags = false;
+    separateDebugInfo = stdenv.isLinux;
+
+    nativeBuildInputs = [ perl ];
+
+    configureScript = "./Configure";
+    configureFlags = [
+      "shared"
+      "--libdir=lib"
+      "--openssldir=etc/ssl"
+      "no-tests"
+      "no-quic"
+    ];
+
+    makeFlags = [ "MANDIR=$(man)/share/man" ];
+    enableParallelBuilding = true;
+
+    postInstall = ''
+      if [ -n "$(echo $out/lib/*.so $out/lib/*.dylib $out/lib/*.dll)" ]; then
+          rm -f "$out/lib/"*.a
+      fi
+
+      mkdir -p $bin
+      mv $out/bin $bin/
+
+      mkdir -p $dev
+      mv $out/include $dev/
+
+      rm -rf $out/etc/ssl/misc
+      rmdir $out/etc/ssl/{certs,private} 2>/dev/null || true
+    '';
+
+    postFixup = ''
+      if grep -r '${buildPackages.perl}' $out; then
+        echo "Found an erroneous dependency on perl ^^^" >&2
+        exit 1
+      fi
+    '';
+
+    crossAttrs = {
+      preConfigure = ''
+        export configureFlags="${concatStringsSep " " (configureFlags ++ [ opensslCrossSystem ])}"
+      '';
+    };
+
+    meta = {
+      homepage = https://www.openssl.org/;
+      description = "A cryptographic library that implements the SSL and TLS protocols";
+      platforms = stdenv.lib.platforms.all;
+    };
+  };
+
 }
